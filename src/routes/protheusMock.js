@@ -2,18 +2,20 @@ const express = require("express");
 const router = express.Router();
 
 router.post("/inventory", (req, res) => {
+  try {
+    console.log("Mock Protheus recebeu:", req.body);
 
-  const random = Math.random();
+    return res.status(200).json({
+      message: "Estoque atualizado no Protheus (mock)"
+    });
 
-  console.log("Mock Protheus recebeu:", req.body);
+  } catch (error) {
+    console.error("Erro no mock Protheus:", error.message);
 
-  // simular erro aleatório
-  if (random < 0.3) {
-    console.log("Erro simulado no Protheus");
-    return res.status(500).json({ error: "Erro interno Protheus" });
+    return res.status(500).json({
+      error: "Erro interno no Protheus"
+    });
   }
-
-  res.json({ message: "OK Protheus" });
 });
 
 module.exports = router;

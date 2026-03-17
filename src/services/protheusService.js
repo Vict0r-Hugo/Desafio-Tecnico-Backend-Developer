@@ -58,7 +58,6 @@ function updateStock(sku, change) {
 }
 
 async function notifyProtheus(data) {
-  console.log("iniciando integração com Protheus");
 
   for (const move of data.movements) {
 
@@ -69,18 +68,15 @@ async function notifyProtheus(data) {
     }
 
     const stock = await getStock(move.sku);
-    console.log("estoque atual:", stock);
 
     if (!stock) {
       throw new Error(`Produto ${move.sku} sem saldo no Protheus`);
     }
 
     await updateStock(move.sku, move.change);
-    console.log("estoque atualizado:", move.sku);
   }
 
   return retry(async () => {
-    console.log("chamando API mock...");
     const response = await axios.post(
       "http://localhost:3000/mock/protheus/inventory",
       data

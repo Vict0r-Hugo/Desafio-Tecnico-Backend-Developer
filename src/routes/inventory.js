@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const authenticateToken = require("../middleware/authMiddleware");
 
 const {
   syncInventory,
-  getLowStock
+  getLowStock, 
+  getAllProducts
 } = require("../services/inventoryService");
 
-router.patch("/v1/inventory/sync", async (req, res) => {
+router.patch("/v1/inventory/sync",authenticateToken, async (req, res) => {
 
   try {
 
@@ -26,11 +28,29 @@ router.patch("/v1/inventory/sync", async (req, res) => {
 
 });
 
-router.get("/v1/products/low-stock", async (req, res) => {
+router.get("/v1/products/low-stock",authenticateToken, async (req, res) => {
 
   try {
 
     const products = await getLowStock(req.query.limit);
+
+    res.json(products);
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
+
+router.get("/v1/products/", authenticateToken, async (req, res) => {
+
+  try {
+
+    const products = await getAllProducts(req.query.limit);
 
     res.json(products);
 

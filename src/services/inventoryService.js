@@ -63,7 +63,31 @@ function getLowStock(limit) {
 
 }
 
+function getAllProducts(limit) {
+
+  return new Promise((resolve, reject) => {
+
+    db.all(
+      `
+      SELECT sku, stock
+      FROM products
+      LIMIT ?
+      `,
+      [limit || 50],
+      (err, rows) => {
+
+        if (err) reject(err);
+        else resolve(rows);
+
+      }
+    );
+
+  });
+
+}
+
 module.exports = {
   syncInventory,
-  getLowStock
+  getLowStock, 
+  getAllProducts
 };

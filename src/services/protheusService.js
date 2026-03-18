@@ -57,7 +57,7 @@ function updateStock(sku, change) {
   });
 }
 
-async function notifyProtheus(data) {
+async function protheusService(data) {
 
   for (const move of data.movements) {
 
@@ -92,4 +92,4 @@ async function notifyProtheus(data) {
 
 }
 
-module.exports = { notifyProtheus };
+module.exports = { protheusService };

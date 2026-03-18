@@ -1,5 +1,5 @@
 const db = require("../database/db");
-const { notifyProtheus } = require("./protheusService");
+const { protheusService } = require("./protheusService");
 
 async function syncInventory(payload) {
 
@@ -20,14 +20,20 @@ async function syncInventory(payload) {
       db.run(
         `
         UPDATE products
-        SET stock = stock + ?
+        SET 
+          stock = stock + ?,
+          is_low_stock = CASE 
+            WHEN stock + ? < min_stock THEN 1 
+            ELSE 0 
+          END
         WHERE sku = ? AND warehouse_id = ?
         `,
-        [move.change, move.sku, warehouse_id],
+        [move.change, move.change, move.sku, warehouse_id],
         function (err) {
 
           if (err) reject(err);
           else resolve();
+
         }
       );
 
@@ -35,11 +41,11 @@ async function syncInventory(payload) {
 
   }
 
-  await notifyProtheus(payload);
+  await protheusService(payload);
 
 }
 
-function getLowStock(limit) {
+function getLowStock() {
 
   return new Promise((resolve, reject) => {
 
@@ -47,10 +53,9 @@ function getLowStock(limit) {
       `
       SELECT sku, stock
       FROM products
-      WHERE stock < min_stock
-      LIMIT ?
+      WHERE is_low_stock = 1
       `,
-      [limit || 50],
+      [],
       (err, rows) => {
 
         if (err) reject(err);

@@ -1,0 +1,44 @@
+#include "protheus.ch"
+
+User Function NotifyProtheus()
+    
+    Local aMovements := PARAMIXB[1] // recebe array de movimentos
+    Local nI         := 0
+    Local cSKU       := ""
+    Local nChange    := 0
+
+    DbSelectArea("SB1")
+    DbSetOrder(1) //B1_COD
+
+    DbSelectArea("SB2")
+    DbSetOrder(1) //B2_COD + B2_LOCAL
+
+    For nI := 1 To Len(aMovements)
+
+        cSKU    := aMovements[nI]["sku"]
+        nChange := aMovements[nI]["change"]
+
+        //Valida produto (SB1)
+        DbSelectArea("SB1")
+        If !DbSeek(xFilial("SB1") + cSKU)
+            FWLogMsg("Produto não existe: " + cSKU)
+            Return .F.
+        EndIf
+
+        // Busca estoque (SB2)
+        DbSelectArea("SB2")
+        If !DbSeek(xFilial("SB2") + cSKU + "A1")
+            FWLogMsg("Produto sem saldo: " + cSKU)
+            Return .F.
+        EndIf
+
+        //Atualiza estoque
+        RecLock("SB2", .F.)
+            SB2->B2_QATU := SB2->B2_QATU + nChange
+        MsUnlock()
+
+        FWLogMsg("Estoque atualizado: " + cSKU)
+
+    Next
+
+Return .T.

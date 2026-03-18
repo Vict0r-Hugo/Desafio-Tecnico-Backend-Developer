@@ -95,4 +95,8 @@ Este projeto simula a integração entre um armazém (WMS) e um ERP, garantindo 
 ## Logica para consulta de low-stock
    - Criei um indice is_low_stock que é atualizado sempre que ocorre uma movimentação no produto
    - Esse indice evita o full table scan já que a busca é feita pelo indice que funciona como uma arvore chamada B-tree,
-    ao invés de comparar dados da tabela ela pontera direto no ramo definido o que evita varrer todo o banco vazendo validações. 
+    ao invés de comparar dados da tabela ela pontera direto no ramo definido o que evita varrer todo o banco vazendo validações.
+
+## Arquivo protheusService.tlpp
+- Um arquivo de fonte em tlpp, com um exemplo de codigo que receberia a requisição no Protheus
+- Obs.: Não foi testado, é apenas um exemplo.

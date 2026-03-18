@@ -60,7 +60,7 @@ Este projeto simula a integração entre um armazém (WMS) e um ERP, garantindo 
 
    - Obs.: Foi criado o usuário e senha "admin" e o login possui autenticação com o banco então não altere o body 
 
-   - A resposta da requisição será o token que devera ser utilizado nas demais requisições.
+   - A resposta da requisição será o token que devera ser utilizado nas demais requisições "Authorization: TOKEN".
 
 ## Endpoints
 
